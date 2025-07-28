@@ -49,7 +49,6 @@ const UserInfo: React.FC = () => {
           setAlertType("success");
           setAlertMessage("ლიცენზია აღებულია");
 
-          // Refresh license info
           queryClient.invalidateQueries({ queryKey: ["licenseInfo"] });
         },
         onError: (err: unknown) => {
