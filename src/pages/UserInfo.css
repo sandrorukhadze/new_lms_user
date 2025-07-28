@@ -1,0 +1,99 @@
+.userinfo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+}
+
+.userinfo-card-wrapper {
+  max-width: 900px;
+  width: 100%;
+}
+
+.userinfo-meta {
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.userinfo-meta p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.userinfo-bold {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
+
+.license-stats {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.stat-box {
+  flex: 1;
+  padding: 6px;
+  border-radius: 6px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-box p {
+  margin: 0;
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+.stat-box h3 {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-box.primary {
+  background-color: #007acc;
+}
+
+.stat-box.danger {
+  background-color: #cc0033;
+}
+
+.userinfo-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.userinfo-buttons button {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  min-width: 130px;
+  font-weight: 500;
+  color: white;
+}
+
+.userinfo-buttons button:hover {
+  opacity: 0.95;
+}
+
+.userinfo-buttons button:first-of-type {
+  background-color: #2e7d32;
+}
+
+.userinfo-buttons button.secondary {
+  background-color: #c62828;
+}
+
+.userinfo-table-wrapper {
+  max-width: 900px;
+  width: 100%;
+}
