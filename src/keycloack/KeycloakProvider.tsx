@@ -15,6 +15,9 @@ const KeycloakProvider = ({ children }: Props) => {
         onLoad: "login-required",
         checkLoginIframe: false,
       }}
+      onTokens={(tokens) => {
+        console.log("🔐 Token obtained:", tokens?.token);
+      }}
     >
       {children}
     </ReactKeycloakProvider>
