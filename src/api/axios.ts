@@ -61,7 +61,9 @@ api.interceptors.response.use(
 
     // ⛔ Access Denied Modal Trigger (403 ან 400-ზე)
     if (status === 403 || status === 400) {
-      keycloak.logout(); // 🔁 ასევე გადაისვრის login-ზე, მაგრამ session გაწყვეტით
+      window.dispatchEvent(
+        new CustomEvent("access-forbidden", { detail: status })
+      );
     }
 
     // ამავე დროს შეგიძლია შეცდომის toast-იც გაუშვა თუ გინდა
