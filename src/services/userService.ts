@@ -1,4 +1,3 @@
-// src/services/userService.ts
 import api from "../api/axios";
 import type { UserInfo } from "../types/userInfo";
 

@@ -3,5 +3,9 @@ export function mapErrorMessage(message: string): string {
     return "თქვენ არ გაქვთ აქტიური ლიცენზია";
   }
 
+  if (message.includes("License not found")) {
+    return "ლიცენზია ვერ მოიძებნა";
+  }
+
   return "დაფიქსირდა შეცდომა";
 }

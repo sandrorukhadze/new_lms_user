@@ -1,4 +1,3 @@
-// src/services/licenseService.ts
 import api from "../api/axios";
 import type { LicenseInfo } from "../types/licenseInfo";
 

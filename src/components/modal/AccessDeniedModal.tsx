@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AccessDeniedModal = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handler = () => setOpen(true);
+    const handler = () => {
+      setOpen(true);
+
+      // ⏳ დავიცადოთ ცოტა რომ მომხმარებელმა დაინახოს შეტყობინება
+      setTimeout(() => {
+        navigate(-1); // ან გამოიყენე navigate("/") — რაც გინდა
+      }, 2000);
+    };
 
     window.addEventListener("access-forbidden", handler);
     return () => window.removeEventListener("access-forbidden", handler);
-  }, []);
+  }, [navigate]);
 
   if (!open) return null;
 
@@ -17,7 +26,6 @@ const AccessDeniedModal = () => {
       <div style={boxStyle}>
         <h2>⛔</h2>
         <p>თქვენ არ გაქვთ შესაბამისი უფლება სისტემაში შესასვლელად.</p>
-       
       </div>
     </div>
   );
