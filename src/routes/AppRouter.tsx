@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 
-import Layout from "../layouts/layout";
+import Layout from "../layouts/Layout";
 import UserInfo from "../pages/UserInfo";
 import NotFound from "../pages/NotFound";
 

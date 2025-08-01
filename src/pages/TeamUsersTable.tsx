@@ -4,7 +4,8 @@ import Card from "../components/common/Card";
 import Table, { type Column } from "../components/table/Table";
 
 interface TeamUserRow {
-  username: string;
+  clientNo: string;
+  name: string;
   licenseStatus: string;
 }
 
@@ -20,17 +21,19 @@ const TeamUsersTable: React.FC = () => {
   }
 
   const columns: Column<TeamUserRow>[] = [
-    { header: "მომხმარებელი", accessor: "username" },
-    { header: "სტატუსი", accessor: "licenseStatus" },
+    { header: "კლიენტის #", accessor: "clientNo" },
+    { header: "სახელი", accessor: "name" },
+    { header: "ლიცენზიის სტატუსი", accessor: "licenseStatus" },
   ];
 
   const data = licenseInfo.teamUsers.map((user) => ({
-    username: user.username,
+    clientNo: user.clientNo != null ? String(user.clientNo) : "",
+    name: user.name, // ✅ შეცვლილია username → name
     licenseStatus: user.licenseStatus === "ACTIVE" ? "აქტიური" : "არაქტიური",
   }));
 
   return (
-    <Card title={`ჯგუფის სახელი: ${licenseInfo.teamName}`}>
+    <Card className="full-width-card" title="გუნდის წევრები">
       <Table columns={columns} data={data} />
     </Card>
   );

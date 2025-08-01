@@ -1,16 +1,16 @@
 import "./Table.css";
 
-export interface Column<T> {
+export type Column<T> = {
   header: string;
   accessor: keyof T;
-}
+};
 
-interface TableProps<T> {
+type Props<T> = {
   columns: Column<T>[];
   data: T[];
-}
+};
 
-const Table = <T,>({ columns, data }: TableProps<T>): React.ReactElement => {
+function Table<T>({ columns, data }: Props<T>) {
   return (
     <div className="custom-table-container">
       <table className="custom-table">
@@ -22,25 +22,17 @@ const Table = <T,>({ columns, data }: TableProps<T>): React.ReactElement => {
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
-            <tr>
-              <td colSpan={columns.length}>მონაცემები არ არის</td>
+          {data.map((row, idx) => (
+            <tr key={idx}>
+              {columns.map((col) => (
+                <td key={String(col.accessor)}>{String(row[col.accessor])}</td>
+              ))}
             </tr>
-          ) : (
-            data.map((row, i) => (
-              <tr key={i}>
-                {columns.map((col) => (
-                  <td key={String(col.accessor)}>
-                    {String(row[col.accessor])}
-                  </td>
-                ))}
-              </tr>
-            ))
-          )}
+          ))}
         </tbody>
       </table>
     </div>
   );
-};
+}
 
 export default Table;

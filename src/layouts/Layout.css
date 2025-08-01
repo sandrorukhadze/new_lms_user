@@ -1,0 +1,9 @@
+/* Layout.css */
+
+.layout-main {
+  margin-left: 250px; /* ემთხვევა sidebar-ის სიგანეს */
+  padding: 32px;
+  min-height: 100vh;
+  background-color: #f9f9f9; /* სურვილისამებრ ფონისთვის */
+  overflow-x: hidden;
+}

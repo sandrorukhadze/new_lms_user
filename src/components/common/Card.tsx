@@ -1,10 +1,11 @@
 import React from "react";
 import "./Card.css";
 
-interface CardProps {
-  title: string;
-  children?: React.ReactNode; // 🔄 optional
-}
+type CardProps = {
+  title?: string;
+  children: React.ReactNode;
+  className?: string; // ✅ დაამატე ეს
+};
 
 const Card: React.FC<CardProps> = ({ title, children }) => {
   return (

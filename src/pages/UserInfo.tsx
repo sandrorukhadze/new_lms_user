@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./UserInfo.css";
-
 import Card from "../components/common/Card";
 import Alert from "../components/common/Alert";
 import TeamUsersTable from "./TeamUsersTable";
-
+import { Stack, Typography } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUserInfo } from "../hooks/useUserInfo";
 import { useLicenseInfo } from "../hooks/useLicenseInfo";
 import { useAcquireLicense } from "../hooks/useAcquireLicense";
@@ -24,16 +24,15 @@ const UserInfo: React.FC = () => {
     data: licenseInfo,
     isLoading: licenseLoading,
     error: licenseError,
+    refetch: refetchLicense,
   } = useLicenseInfo();
 
   const { mutate: acquireLicense, isPending: isSubmitting } =
     useAcquireLicense();
 
-  // Alert state
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<"success" | "error">("success");
 
-  // Auto-dismiss alert after 3 seconds
   useEffect(() => {
     if (alertMessage) {
       const timer = setTimeout(() => setAlertMessage(null), 3000);
@@ -48,16 +47,14 @@ const UserInfo: React.FC = () => {
         onSuccess: () => {
           setAlertType("success");
           setAlertMessage("ლიცენზია აღებულია");
-
           queryClient.invalidateQueries({ queryKey: ["licenseInfo"] });
+          refetchLicense();
         },
         onError: (err: unknown) => {
           let message = "უცნობი შეცდომა";
-
           if (err instanceof Error) {
             message = mapErrorMessage(err.message);
           }
-
           setAlertType("error");
           setAlertMessage(message);
         },
@@ -82,7 +79,6 @@ const UserInfo: React.FC = () => {
           const message = mapErrorMessage(
             maybeAxiosError.response?.data?.message || "დაფიქსირდა შეცდომა"
           );
-
           setAlertType("error");
           setAlertMessage(message);
         },
@@ -100,18 +96,24 @@ const UserInfo: React.FC = () => {
 
   return (
     <div className="userinfo-container">
-      {/* ✅ Alert – ქვედა მარჯვენა კუთხეში */}
       {alertMessage && <Alert type={alertType} message={alertMessage} />}
 
       <div className="userinfo-card-wrapper">
-        <Card title="ინფორმაცია მომხმარებელზე">
+        <Card className="full-width-card">
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <AccountCircleIcon sx={{ fontSize: 48, color: "#1976d2" }} />
+            <Typography variant="h6">{user.username}</Typography>
+          </Stack>
+
+          <hr style={{ marginBottom: 16 }} />
+
           <div className="userinfo-meta">
             <p>
               <strong>მომხმარებლის სახელი:</strong>{" "}
-              <span className="userinfo-bold">{user.username}</span>
+              <span className="userinfo-bold">{user.firstName}</span>
             </p>
             <p>
-              <strong>მომხმარებლის სტატუსი:</strong>{" "}
+              <strong>ლიცენზიის სტატუსი:</strong>{" "}
               <span className="userinfo-bold">
                 {licenseInfo.licenseStatus === "ACTIVE"
                   ? "აქტიური"
@@ -122,18 +124,20 @@ const UserInfo: React.FC = () => {
 
           <div className="license-stats">
             <div className="stat-box primary">
-              <p>ლიცენზიების რაოდენობა</p>
-              <h3>{licenseInfo.totalLicenseCount}</h3>
+              <p>სულ ლიცენზიები: {licenseInfo.totalLicenseCount}</p>
             </div>
             <div className="stat-box danger">
-              <p>გამოყენებული</p>
-              <h3>{licenseInfo.usedLicenseCount}</h3>
+              <p>გამოყენებული: {licenseInfo.usedLicenseCount}</p>
             </div>
           </div>
 
           <div className="userinfo-buttons">
             <button onClick={handleTakeLicense} disabled={isSubmitting}>
-              {isSubmitting ? "მიმდინარეობს..." : "ლიცენზიის აღება"}
+              {isSubmitting
+                ? "მიმდინარეობს..."
+                : licenseInfo.licenseStatus === "ACTIVE"
+                ? "განახლება"
+                : "ლიცენზიის აღება"}
             </button>
             <button
               onClick={handleReturnLicense}

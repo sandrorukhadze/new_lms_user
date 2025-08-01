@@ -1,91 +1,88 @@
 .userinfo-container {
+  padding: 24px 32px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 24px;
-  padding: 20px;
+  margin-top: -20px;
 }
 
-.userinfo-card-wrapper {
-  max-width: 900px;
+.userinfo-card-wrapper,
+.userinfo-table-wrapper {
   width: 100%;
 }
 
-.userinfo-meta {
-  margin-bottom: 16px;
-  line-height: 1.5;
+.full-width-card {
+  width: 100%;
+  max-width: none;
 }
 
-.userinfo-meta p {
-  margin: 6px 0;
-  font-size: 15px;
-  color: #333;
+.userinfo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.userinfo-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.userinfo-meta {
+  margin-bottom: 24px;
+  line-height: 1.6;
 }
 
 .userinfo-bold {
-  font-size: 20px;
-  font-weight: 700;
-  color: #000;
+  font-weight: bold;
+  color: #333;
 }
 
 .license-stats {
   display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin: 12px 0 20px 0;
+  justify-content: flex-start;
 }
-
 .stat-box {
-  flex: 1;
-  padding: 6px;
-  border-radius: 6px;
-  color: white;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.stat-box p {
-  margin: 0;
-  font-size: 10px;
-  opacity: 0.75;
-}
-
-.stat-box h3 {
-  margin: 4px 0 0;
-  font-size: 14px;
-  font-weight: 600;
+  background-color: #f9f9f9;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .stat-box.primary {
-  background-color: #007acc;
+  border-color: #1976d2;
+  color: #1976d2;
+  background: #e3f2fd;
 }
 
 .stat-box.danger {
-  background-color: #cc0033;
+  border-color: #d32f2f;
+  color: #d32f2f;
+  background: #ffebee;
 }
 
 .userinfo-buttons {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 12px;
+  justify-content: flex-start;
 }
 
 .userinfo-buttons button {
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
-  min-width: 130px;
+  transition: all 0.2s ease;
   font-weight: 500;
   color: white;
-}
-
-.userinfo-buttons button:hover {
-  opacity: 0.95;
-}
-
-.userinfo-buttons button:first-of-type {
   background-color: #2e7d32;
 }
 
@@ -93,7 +90,7 @@
   background-color: #c62828;
 }
 
-.userinfo-table-wrapper {
-  max-width: 900px;
-  width: 100%;
+.userinfo-buttons button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

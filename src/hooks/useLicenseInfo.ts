@@ -5,5 +5,6 @@ export const useLicenseInfo = () => {
   return useQuery({
     queryKey: ["licenseInfo"],
     queryFn: getLicenseInfo,
+    refetchInterval: 15000, 
   });
 };

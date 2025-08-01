@@ -8,7 +8,6 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
-// ✅ Token Service ლოკალურად
 const tokenService = {
   getToken: () => keycloak.token || null,
 
@@ -27,7 +26,6 @@ const tokenService = {
   },
 };
 
-// ✅ Request interceptor – Access Token დაყენება
 api.interceptors.request.use((config) => {
   config.headers = config.headers || {};
 
@@ -39,7 +37,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ✅ Response interceptor – 401-ზე refresh და retry
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -59,14 +56,12 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     const message = error?.response?.data?.message || "";
 
-    // ⛔ Access Denied Modal Trigger (403 ან 400-ზე)
     if (status === 403 || status === 400) {
       window.dispatchEvent(
         new CustomEvent("access-forbidden", { detail: status })
       );
     }
 
-    // ამავე დროს შეგიძლია შეცდომის toast-იც გაუშვა თუ გინდა
     const friendly = mapErrorMessage(message);
     toast.error(friendly);
 
