@@ -47,8 +47,12 @@ const UserInfo: React.FC = () => {
         onSuccess: () => {
           setAlertType("success");
           setAlertMessage("ლიცენზია აღებულია");
+
           queryClient.invalidateQueries({ queryKey: ["licenseInfo"] });
           refetchLicense();
+
+          // ✅ დამატება აქ
+          window.location.href = "lmsprodapp://";
         },
         onError: (err: unknown) => {
           let message = "უცნობი შეცდომა";
@@ -142,7 +146,7 @@ const UserInfo: React.FC = () => {
             <button
               onClick={handleReturnLicense}
               className="secondary"
-              disabled={isSubmitting}
+              disabled={isSubmitting || licenseInfo.licenseStatus !== "ACTIVE"}
             >
               ლიცენზიის დაბრუნება
             </button>
