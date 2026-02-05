@@ -1,0 +1,42 @@
+.license-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.license-modal {
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 8px;
+  width: 340px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.license-modal h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.license-modal p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+.license-modal button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.license-modal button:hover {
+  background: #1565c0;
+}
