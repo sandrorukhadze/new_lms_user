@@ -1,9 +1,10 @@
+// UserInfo.tsx
 import React, { useState, useEffect } from "react";
 import "./UserInfo.css";
 import Card from "../components/common/Card";
 import Alert from "../components/common/Alert";
 import TeamUsersTable from "./TeamUsersTable";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Modal, Box, Button } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUserInfo } from "../hooks/useUserInfo";
 import { useLicenseInfo } from "../hooks/useLicenseInfo";
@@ -33,6 +34,9 @@ const UserInfo: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<"success" | "error">("success");
 
+  // 🆕 მოდალის სტეიტი
+  const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
+
   useEffect(() => {
     if (alertMessage) {
       const timer = setTimeout(() => setAlertMessage(null), 3000);
@@ -51,16 +55,25 @@ const UserInfo: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ["licenseInfo"] });
           refetchLicense();
 
-          // ✅ დამატება აქ
-          window.location.href = "lmsprodapp://";
+          // window.location.href = "lmsprodapp://";
+          window.location.href = "lmsdevapp://";
         },
         onError: (err: unknown) => {
-          let message = "უცნობი შეცდომა";
-          if (err instanceof Error) {
-            message = mapErrorMessage(err.message);
+          const maybeAxiosError = err as {
+            response?: { data?: { message?: string } };
+          };
+
+          const rawMessage = maybeAxiosError.response?.data?.message || "";
+          const friendlyMessage = mapErrorMessage(rawMessage);
+
+          // 🆕 თუ კონკრეტული მესიჯია, გამოვაჩინოთ მოდალი
+          if (rawMessage.includes("License not available")) {
+            setIsLicenseModalOpen(true);
+            return;
           }
+
           setAlertType("error");
-          setAlertMessage(message);
+          setAlertMessage(friendlyMessage);
         },
       }
     );
@@ -157,6 +170,52 @@ const UserInfo: React.FC = () => {
       <div className="userinfo-table-wrapper">
         <TeamUsersTable />
       </div>
+
+      {/* 🆕 მოდალი ლიცენზიის არქონის შემთხვევაში */}
+      <Modal
+        open={isLicenseModalOpen}
+        onClose={() => setIsLicenseModalOpen(false)}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 420,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={{
+              textAlign: "center",
+              color: "text.secondary",
+              mb: 3,
+            }}
+          >
+            ამჟამად ყველა ლიცენზია გამოყენებულია. გთხოვთ სცადეთ მოგვიანებით.
+          </Typography>
+
+          <Button
+            onClick={() => setIsLicenseModalOpen(false)}
+            variant="contained"
+            color="primary"
+            sx={{
+              mt: 1,
+              px: 4,
+            }}
+          >
+            დახურვა
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };

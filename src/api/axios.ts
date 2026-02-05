@@ -26,6 +26,7 @@ const tokenService = {
   },
 };
 
+// 📦 Request Interceptor: Add Bearer Token
 api.interceptors.request.use((config) => {
   config.headers = config.headers || {};
 
@@ -37,6 +38,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// 📦 Response Interceptor: Error Handling
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -56,14 +58,31 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     const message = error?.response?.data?.message || "";
 
-    if (status === 403 || status === 400) {
+    // 🎯 შევამოწმოთ ლიცენზიის მესიჯი
+    const isLicenseUnavailable = message.includes("License not available");
+
+    // ✅ თუ ლიცენზიები გამოყენებულია – ჩვენი custom მოდალის event
+    if (isLicenseUnavailable) {
+      window.dispatchEvent(
+        new CustomEvent("license-unavailable", {
+          detail: {
+            message: "ამჟამად ყველა ლიცენზია გამოყენებულია",
+          },
+        })
+      );
+    }
+    // ✅ სხვა შემთხვევაში, access-forbidden
+    else if (status === 403 || status === 400) {
       window.dispatchEvent(
         new CustomEvent("access-forbidden", { detail: status })
       );
     }
 
-    const friendly = mapErrorMessage(message);
-    toast.error(friendly);
+    // ❌ თუ არ გვინდა toast ამ შემთხვევაში, მოვაშოროთ:
+    if (!isLicenseUnavailable) {
+      const friendly = mapErrorMessage(message);
+      toast.error(friendly);
+    }
 
     return Promise.reject(error);
   }
