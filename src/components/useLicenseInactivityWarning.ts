@@ -11,7 +11,7 @@ function parseBackendDate(input: string): Date | null {
 
 export function useLicenseInactivityWarning(
   actionTime: string | null | undefined,
-  inactiveMinutes: number = 1,
+  inactiveMinutes: number = 5,
 ) {
   const [showWarning, setShowWarning] = useState(false);
   const hasShownRef = useRef(false);

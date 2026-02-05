@@ -2,6 +2,7 @@ import React from "react";
 import { useLicenseInfo } from "../hooks/useLicenseInfo";
 import { useLicenseInactivityWarning } from "./useLicenseInactivityWarning";
 import "./LicenseInactivityModal.css";
+import { useBlinkingTitle } from "./useBlinkingTitle";
 
 type LicenseInfo = {
   actionTime: string | null;
@@ -12,7 +13,9 @@ const LicenseInactivityModal: React.FC = () => {
 
   const actionTime = (data as LicenseInfo | undefined)?.actionTime ?? null;
 
-  const { showWarning, close } = useLicenseInactivityWarning(actionTime, 1);
+  const { showWarning, close } = useLicenseInactivityWarning(actionTime, 5);
+
+  useBlinkingTitle(showWarning, "⚠️ დაფიქსირდა უმოქმედობა");
 
   if (!showWarning) return null;
 
