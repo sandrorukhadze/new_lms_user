@@ -1,17 +1,16 @@
 import { useEffect, useRef } from "react";
 
 export function useBlinkingTitle(
-  shouldBlink: boolean,
-  alertTitle: string = "⚠️ უმოქმედობა დაფიქსირდა",
-  intervalMs: number = 100,
+  active: boolean,
+  alertTitle = "⚠️ 1 წუთზე ნაკლები დრო დარჩა",
+  intervalMs = 1000,
 ) {
-  const originalTitleRef = useRef<string>(document.title);
+  const originalTitleRef = useRef(document.title);
 
   useEffect(() => {
-    if (!shouldBlink) return;
+    if (!active) return;
 
     const original = originalTitleRef.current;
-
     const id = window.setInterval(() => {
       document.title = document.title === original ? alertTitle : original;
     }, intervalMs);
@@ -20,5 +19,5 @@ export function useBlinkingTitle(
       window.clearInterval(id);
       document.title = original;
     };
-  }, [shouldBlink, alertTitle, intervalMs]);
+  }, [active, alertTitle, intervalMs]);
 }

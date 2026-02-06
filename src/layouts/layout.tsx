@@ -2,14 +2,15 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/sidebar/Sidebar";
 import AccessDeniedModal from "../components/modal/AccessDeniedModal";
 import "./Layout.css";
-import LicenseInactivityModal from "../components/LicenseInactivityModal";
+import { ToastContainer } from "react-toastify";
+import LicenseCountdownToast from "../components/LicenseCountdownToast";
 
 const Layout = () => {
   return (
     <>
       <AccessDeniedModal />
-      <LicenseInactivityModal /> {/* 👈 აქ */}
-      <Sidebar />
+      <ToastContainer position="bottom-right" autoClose={false} />
+      <LicenseCountdownToast /> <Sidebar />
       <main className="layout-main">
         <Outlet />
       </main>
