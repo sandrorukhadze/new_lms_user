@@ -21,10 +21,7 @@ function showDesktopNotification(title: string, body?: string) {
   if (Notification.permission !== "granted") return;
 
   try {
-    new Notification(title, {
-      body,
-      requireInteraction: true,
-    });
+    new Notification(title, { body, requireInteraction: true });
   } catch {
     // ignore
   }
@@ -39,23 +36,37 @@ export default function LicenseCountdownToast() {
 
   const [isUnderOneMinute, setIsUnderOneMinute] = useState(false);
 
-  // Desktop notification ერთხელ რომ გავუშვათ თითო actionTime-ზე
-  const desktopNotifiedRef = useRef(false);
+  // თითო actionTime-ზე ერთხელ
+  const desktopStartNotifiedRef = useRef(false);
+  const desktopLastMinuteNotifiedRef = useRef(false);
 
-  // 👉 tab title blink
+  // timeouts/intervals cleanup
+  const tickIntervalRef = useRef<number | null>(null);
+  const lastMinuteTimeoutRef = useRef<number | null>(null);
+
   useBlinkingTitle(
     isUnderOneMinute,
     "⚠️ თქვენ გამოყენებული გაქვთ ლიცენზია, დარჩენილია 1 წუთზე ნაკლები დრო",
   );
 
   useEffect(() => {
-    // actionTime შეიცვალა → reset
+    // reset როცა actionTime იცვლება
     if (lastActionRef.current !== actionTime) {
       if (toastIdRef.current) toast.dismiss(toastIdRef.current);
       toastIdRef.current = null;
+
       lastActionRef.current = actionTime;
       setIsUnderOneMinute(false);
-      desktopNotifiedRef.current = false;
+
+      desktopStartNotifiedRef.current = false;
+      desktopLastMinuteNotifiedRef.current = false;
+
+      if (tickIntervalRef.current)
+        window.clearInterval(tickIntervalRef.current);
+      if (lastMinuteTimeoutRef.current)
+        window.clearTimeout(lastMinuteTimeoutRef.current);
+      tickIntervalRef.current = null;
+      lastMinuteTimeoutRef.current = null;
     }
 
     if (!actionTime) return;
@@ -64,6 +75,13 @@ export default function LicenseCountdownToast() {
     if (!start) return;
 
     const totalMs = TOTAL_MINUTES * 60_000;
+    const endTs = start.getTime() + totalMs;
+
+    // ✅ 1) actionTime მოვიდა → notification მაშინვე (არ აქვს მნიშვნელობა tab/ჩაკეცილი)
+    if (!desktopStartNotifiedRef.current) {
+      desktopStartNotifiedRef.current = true;
+      showDesktopNotification("ℹ️ თქვენ გამოყენებული გაქვთ ლიცენზია");
+    }
 
     // toast ეგრევე
     toastIdRef.current = toast.info("დარჩენილია --:--", {
@@ -80,26 +98,32 @@ export default function LicenseCountdownToast() {
       },
     });
 
-    const id = window.setInterval(() => {
-      const elapsedMs = Date.now() - start.getTime();
-      const remainingMs = totalMs - elapsedMs;
-      const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+    // ✅ 2) დაგეგმვა: როცა დარჩება ზუსტად 60 წამი (ან თუ უკვე < 60 წამშია, მაშინვე)
+    const now = Date.now();
+    const lastMinuteAt = endTs - 60_000;
+    const delay = Math.max(0, lastMinuteAt - now);
 
-      const underOneMinute = remainingMs > 0 && remainingMs < 108_000;
-      setIsUnderOneMinute(underOneMinute);
-
-      // ✅ თუ სხვა tab-ზეა და დარჩა < 1 წუთი → Desktop notification ერთხელ
-      if (underOneMinute && document.hidden && !desktopNotifiedRef.current) {
-        desktopNotifiedRef.current = true;
-
+    lastMinuteTimeoutRef.current = window.setTimeout(() => {
+      if (!desktopLastMinuteNotifiedRef.current) {
+        desktopLastMinuteNotifiedRef.current = true;
         showDesktopNotification("⚠️ 1 წუთზე ნაკლები დრო დარჩა");
       }
+    }, delay);
+
+    // tick UI-ისთვის (toast/title)
+    tickIntervalRef.current = window.setInterval(() => {
+      const now2 = Date.now();
+      const remainingMs = Math.max(0, endTs - now2);
+      const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+
+      const underOneMinute = remainingMs > 0 && remainingMs <= 60_000;
+      setIsUnderOneMinute(underOneMinute);
 
       toast.update(toastIdRef.current!, {
         render: `დარჩენილია ${mmss(remainingSec)}`,
         type: underOneMinute ? "warning" : "info",
         style: {
-          background: underOneMinute ? "#b45309" : "#1e293b", // <1 წუთზე ნარინჯისფერი
+          background: underOneMinute ? "#b45309" : "#1e293b",
           color: "#fff",
           fontWeight: 600,
           borderRadius: "10px",
@@ -108,11 +132,20 @@ export default function LicenseCountdownToast() {
       });
 
       if (remainingMs <= 0) {
-        window.clearInterval(id);
+        if (tickIntervalRef.current)
+          window.clearInterval(tickIntervalRef.current);
+        tickIntervalRef.current = null;
       }
     }, 1000);
 
-    return () => window.clearInterval(id);
+    return () => {
+      if (tickIntervalRef.current)
+        window.clearInterval(tickIntervalRef.current);
+      if (lastMinuteTimeoutRef.current)
+        window.clearTimeout(lastMinuteTimeoutRef.current);
+      tickIntervalRef.current = null;
+      lastMinuteTimeoutRef.current = null;
+    };
   }, [actionTime]);
 
   return null;
