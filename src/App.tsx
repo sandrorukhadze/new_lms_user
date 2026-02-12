@@ -1,5 +1,6 @@
 import AppRouter from "./routes/AppRouter";
 import { useKeycloak } from "@react-keycloak/web";
+import { LicensePoller } from "./components/LicensePoller";
 
 const App = () => {
   const { initialized, keycloak } = useKeycloak();
@@ -14,7 +15,12 @@ const App = () => {
     return <div>🚫 No token, waiting for authentication...</div>;
   }
 
-  return <AppRouter />;
+  return (
+    <>
+      <LicensePoller />
+      <AppRouter />
+    </>
+  );
 };
 
 export default App;
