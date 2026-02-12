@@ -36,11 +36,9 @@ export default function LicenseCountdownToast() {
 
   const [isUnderOneMinute, setIsUnderOneMinute] = useState(false);
 
-  // თითო actionTime-ზე ერთხელ
   const desktopStartNotifiedRef = useRef(false);
   const desktopLastMinuteNotifiedRef = useRef(false);
 
-  // timeouts/intervals cleanup
   const tickIntervalRef = useRef<number | null>(null);
   const lastMinuteTimeoutRef = useRef<number | null>(null);
 
@@ -77,13 +75,11 @@ export default function LicenseCountdownToast() {
     const totalMs = TOTAL_MINUTES * 60_000;
     const endTs = start.getTime() + totalMs;
 
-    // ✅ 1) actionTime მოვიდა → notification მაშინვე (არ აქვს მნიშვნელობა tab/ჩაკეცილი)
     if (!desktopStartNotifiedRef.current) {
       desktopStartNotifiedRef.current = true;
       showDesktopNotification("ℹ️ თქვენ გამოყენებული გაქვთ ლიცენზია");
     }
 
-    // toast ეგრევე
     toastIdRef.current = toast.info("დარჩენილია --:--", {
       autoClose: false,
       closeOnClick: false,
@@ -98,7 +94,6 @@ export default function LicenseCountdownToast() {
       },
     });
 
-    // ✅ 2) დაგეგმვა: როცა დარჩება ზუსტად 60 წამი (ან თუ უკვე < 60 წამშია, მაშინვე)
     const now = Date.now();
     const lastMinuteAt = endTs - 60_000;
     const delay = Math.max(0, lastMinuteAt - now);
@@ -110,7 +105,6 @@ export default function LicenseCountdownToast() {
       }
     }, delay);
 
-    // tick UI-ისთვის (toast/title)
     tickIntervalRef.current = window.setInterval(() => {
       const now2 = Date.now();
       const remainingMs = Math.max(0, endTs - now2);
