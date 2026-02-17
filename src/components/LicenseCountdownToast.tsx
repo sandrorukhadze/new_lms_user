@@ -77,7 +77,7 @@ export default function LicenseCountdownToast() {
 
     if (!desktopStartNotifiedRef.current) {
       desktopStartNotifiedRef.current = true;
-      showDesktopNotification("ℹ️ თქვენ გამოყენებული გაქვთ ლიცენზია");
+      showDesktopNotification("ℹ️ თქვენს მიერ გამოყენებული LMS-ის ლიცენზიის დრო იწურება");
     }
 
     toastIdRef.current = toast.info("დარჩენილია --:--", {
